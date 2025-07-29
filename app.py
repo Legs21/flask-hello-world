@@ -29,3 +29,37 @@ def db_create():
     conn.commit()
     conn.close()
     return "Basketball table successfully created."
+
+@app.route('/db_insert')
+def db_insert():
+    conn = psycopg.connect("postgresql://spencer_db_1vyf_user:hllDG7XjGhJb5TGJAkrBooEwq7ltwX10@dpg-d24lc4s9c44c73aet560-a/spencer_db_1vyf")
+    cur = conn.cursor()
+    cur.execute('''
+        INSERT INTO Basketball (First, Last, City, Name, Number)
+        Values ('Jayson', 'Tatum', 'Boston', 'Celtics', 0),
+        ('Stephen', 'Curry', 'San Francisco', 'Warriors', 30),
+        ('Nikola', 'Jokic', 'Denver', 'Nuggets', 15),
+        ('Kawhi', 'Leonard', 'Los Angeles', 'Clippers', 2);
+    ''')
+    conn.commit()
+    conn.close()
+    return "Basketball table successfully populated."
+
+@app.route('/db_select')
+def db_select():
+    conn = psycopg.connect("postgresql://spencer_db_1vyf_user:hllDG7XjGhJb5TGJAkrBooEwq7ltwX10@dpg-d24lc4s9c44c73aet560-a/spencer_db_1vyf")
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT * FROM Basketball;
+    ''')
+    records = cur.fetchall()
+    conn.close()
+    response_string=""
+    response_string+="<table>"
+    for player in records:
+        response_string+="<tr>"
+        for info in player:
+            response_string+="<td>{}</td>".format(info)
+        response_string+="</tr>"
+    response_string+="<table>"
+    return response_string
